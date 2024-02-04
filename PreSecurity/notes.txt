@@ -1,1 +1,99 @@
 
+Type	Purpose	Explanation	Example
+Network Address 
+This address identifies the start of the actual network and is used to identify a network's existence.
+For example, a device with the IP address of 192.168.1.100 will be on the network identified by 192.168.1.0
+192.168.1.0
+Host Address
+An IP address here is used to identify a device on the subnet
+For example, a device will have the network address of 192.168.1.1
+192.168.1.100
+Default Gateway
+The default gateway address is a special address assigned to a device on the network that is capable of sending information to another network 
+Any data that needs to go to a device that isn't on the same network (i.e. isn't on 192.168.1.0) will be sent to this device. These devices can use any host address but usually use either the first or last host address in a network (.1 or .254)
+192.168.1.254
+
+How does ARP Work?
+Each device within a network has a ledger to store information on, which is called a cache. In the context of the ARP protocol, this cache stores the identifiers of other devices on the network.
+In order to map these two identifiers together (IP address and MAC address), the ARP protocol sends two types of messages:
+ARP Request
+ARP Reply
+When an ARP request is sent, a message is broadcasted to every other device found on a network by the device, asking whether or not the device's MAC address matches the requested IP address. If the device does have the requested IP address, an ARP reply is returned to the initial device to acknowledge this. The initial device will now remember this and store it within its cache (an ARP entry). 
+
+IP addresses can be assigned either manually, by entering them physically into a device, or automatically and most commonly by using a DHCP (Dynamic Host Configuration Protocol) server. When a device connects to a network, if it has not already been manually assigned an IP address, it sends out a request (DHCP Discover) to see if any DHCP servers are on the network. The DHCP server then replies back with an IP address the device could use (DHCP Offer). The device then sends a reply confirming it wants the offered IP Address (DHCP Request), and then lastly, the DHCP server sends a reply acknowledging this has been completed, and the device can start using the IP Address (DHCP ACK).
+
+OSI model: physical, data link, network, transport, session, presentation, application
+
+
+Header	Description
+Source Port	This value is the port opened by the sender to send the TCP packet from. This value is chosen randomly (out of the ports from 0-65535 that aren't already in use at the time).
+Destination Port	This value is the port number that an application or service is running on the remote host (the one receiving data); for example, a webserver running on port 80. Unlike the source port, this value is not chosen at random.
+Source IP	This is the IP address of the device that is sending the packet.
+Destination IP	This is the IP address of the device that the packet is destined for.
+Sequence Number	When a connection occurs, the first piece of data transmitted is given a random number. We'll explain this more in-depth further on.
+Acknowledgement Number	After a piece of data has been given a sequence number, the number for the next piece of data will have the sequence number + 1. We'll also explain this more in-depth further on.
+Checksum	This value is what gives TCP integrity. A mathematical calculation is made where the output is remembered. When the receiving device performs the mathematical calculation, the data must be corrupt if the output is different from what was sent.
+Data	This header is where the data, i.e. bytes of a file that is being transmitted, is stored.
+Flag	This header determines how the packet should be handled by either device during the handshake process. Specific flags will determine specific behaviours, which is what we'll come on to explain below.
+Step	Message	Description
+1	SYN	A SYN message is the initial packet sent by a client during the handshake. This packet is used to initiate a connection and synchronise the two devices together (we'll explain this further later on).
+2	SYN/ACK	This packet is sent by the receiving device (server) to acknowledge the synchronisation attempt from the client.
+3	ACK	The acknowledgement packet can be used by either the client or server to acknowledge that a series of messages/packets have been successfully received.
+4	DATA	Once a connection has been established, data (such as bytes of a file) is sent via the "DATA" message.
+5	FIN	This packet is used to cleanly (properly) close the connection after it has been complete.
+#	RST	This packet abruptly ends all communication. This is the last resort and indicates there was some problem during the process. For example, if the service or application is not working correctly, or the system has faults such as low resources. 
+
+Header	Description
+Time to Live (TTL)
+This field sets an expiry timer for the packet, so it doesn't clog up your network if it never manages to reach a host or escape!
+Source Address	The IP address of the device that the packet is being sent from, so that data knows where to return to.
+Destination Address	The device's IP address the packet is being sent to so that data knows where to travel next.
+Source Port	This value is the port that is opened by the sender to send the UDP packet from. This value is randomly chosen (out of the ports from 0-65535 that aren't already in use at the time).
+Destination Port	This value is the port number that an application or service is running on the remote host (the one receiving the data); for example, a webserver running on port 80. Unlike the source port, this value is not chosen at random.
+Data	This header is where data, i.e. bytes of a file that is being transmitted, is stored.
+
+Protocol	Port Number	Description
+File Transfer Protocol (FTP)	21	This protocol is used by a file-sharing application built on a client-server model, meaning you can download files from a central location.
+Secure Shell (SSH)	22	This protocol is used to securely login to systems via a text-based interface for management.
+HyperText Transfer Protocol (HTTP)	80	This protocol powers the World Wide Web (WWW)! Your browser uses this to download text, images and videos of web pages.
+HyperText Transfer Protocol Secure (HTTPS)		443	This protocol does the exact same as above; however, securely using encryption.
+Server Message Block (SMB)	445	This protocol is similar to the File Transfer Protocol (FTP); however, as well as files, SMB allows you to share devices like printers.
+Remote Desktop Protocol (RDP)	3389	This protocol is a secure means of logging in to a system using a visual desktop interface (as opposed to the text-based limitations of the SSH protocol).
+
+Firewall Category	Description
+Stateful	
+This type of firewall uses the entire information from a connection; rather than inspecting an individual packet, this firewall determines the behaviour of a device based upon the entire connection.
+This firewall type consumes many resources in comparison to stateless firewalls as the decision making is dynamic. For example, a firewall could allow the first parts of a TCP handshake that would later fail.
+If a connection from a host is bad, it will block the entire device.
+Stateless	
+This firewall type uses a static set of rules to determine whether or not individual packets are acceptable or not. For example, a device sending a bad packet will not necessarily mean that the entire device is then blocked.
+Whilst these firewalls use much fewer resources than alternatives, they are much dumber. For example, these firewalls are only effective as the rules that are defined within them. If a rule is not exactly matched, it is effectively useless.
+However, these firewalls are great when receiving large amounts of traffic from a set of hosts (such as a Distributed Denial-of-Service attack)
+
+VPN Technology	Description
+PPP	
+This technology is used by PPTP (explained below) to allow for authentication and provide encryption of data. VPNs work by using a private key and public certificate (similar to SSH). A private key & certificate must match for you to connect.
+This technology is not capable of leaving a network by itself (non-routable).
+PPTP	
+The Point-to-Point Tunneling Protocol (PPTP) is the technology that allows the data from PPP to travel and leave a network. 
+PPTP is very easy to set up and is supported by most devices. It is, however, weakly encrypted in comparison to alternatives.
+IPSec	
+Internet Protocol Security (IPsec) encrypts data using the existing Internet Protocol (IP) framework.
+IPSec is difficult to set up in comparison to alternatives; however, if successful, it boasts strong encryption and is also supported on many devices.
+
+A technology called VLAN (Virtual Local Area Network) allows specific devices within a network to be virtually split up. This split means they can all benefit from things such as an Internet connection but are treated separately. This network separation provides security because it means that rules in place determine how specific devices communicate with each other. This segregation is illustrated in the diagram below:
+
+HANDSHAKE: Starting TCP/IP Handshake between computer1 and computer3
+HANDSHAKE: Sending SYN Packet from computer1 to computer3
+ROUTING: computer1 says computer3 is not on my local network sending to gateway: router
+ARP REQUEST: Who has router tell computer1
+ARP RESPONSE: Hey computer1, I am router
+ARP REQUEST: Who has computer3 tell router
+ARP RESPONSE: Hey router, I am computer3
+HANDSHAKE: computer3 received SYN Packet from computer1, sending SYN/ACK Packet to computer1
+HANDSHAKE: computer1 received SYN/ACK Packet from computer3, sending ACK packet to computer3
+HANDSHAKE: computer3 received ACK packet from computer1, Handshake Complete
+TCP: Sending TCP packet from computer1 to computer3
+TCP: computer3 received TCP Packet from computer1, sending ACK Packet to computer1
+
+
