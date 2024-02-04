@@ -1,1 +1,5 @@
+#!/bin/sh
+IP=8.8.8.8
+nmap -sC -sV $IP
+gobuster dir -u $IP -w /usr/share/wordlist/dirb/common.txt
 
